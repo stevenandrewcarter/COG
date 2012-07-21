@@ -1,0 +1,112 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{BAE0AE46-97E4-4B20-9AF8-78541A0C19D6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Clockwork</RootNamespace>
+    <AssemblyName>Clockwork</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Agents\Agent.cs">
+    </Compile>
+    <Compile Include="Agents\AgentEntity.cs" />
+    <Compile Include="Agents\ClientAgent.cs" />
+    <Compile Include="Agents\LogisticsAgent.cs" />
+    <Compile Include="Agents\ManufacturerAgent.cs" />
+    <Compile Include="Agents\SupplierAgent.cs" />
+    <Compile Include="Enumerations.cs" />
+    <Compile Include="Execution\Tasks\ClientTask.cs" />
+    <Compile Include="Execution\Tasks\LogisticTask.cs" />
+    <Compile Include="Execution\Tasks\ManufacturerTask.cs" />
+    <Compile Include="Execution\Tasks\SupplierTask.cs" />
+    <Compile Include="GraphStructures\CoordinationGraph.cs" />
+    <Compile Include="Properties\Config.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Config.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Environment.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Execution\ExecutionNode.cs" />
+    <Compile Include="Execution\ExecutionTree.cs">
+    </Compile>
+    <Compile Include="GraphStructures\CommunicationGraphEdge.cs" />
+    <Compile Include="GraphStructures\CommunicationGraphNode.cs" />
+    <Compile Include="GraphStructures\CoordinationGraphEdge.cs" />
+    <Compile Include="GraphStructures\CoordinationGraphNode.cs" />
+    <Compile Include="GraphStructures\Graph.cs" />
+    <Compile Include="GraphStructures\GraphEdge.cs" />
+    <Compile Include="GraphStructures\GraphNode.cs" />
+    <Compile Include="ICoordinationAgent.cs" />
+    <Compile Include="Logging\Log.cs" />
+    <Compile Include="Logging\LogItem.cs" />
+    <Compile Include="Agents\ServiceAgents\Controller.cs">
+    </Compile>
+    <Compile Include="Agents\ServiceAgents\Operator.cs">
+    </Compile>
+    <Compile Include="Execution\Tasks\RootTask.cs" />
+    <Compile Include="Telegram\Message.cs" />
+    <Compile Include="Execution\Tasks\Task.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Telegram\MessageQueue.cs" />
+    <Compile Include="Telegram\InformMessage.cs" />
+    <Compile Include="Telegram\RequestMessage.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Clockwork.cd" />
+    <None Include="Properties\Config.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Config.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\UtilityClasses\UtilityClasses.csproj">
+      <Project>{9F3DDDA3-9057-4A9D-8EC0-1CC90A3D061C}</Project>
+      <Name>UtilityClasses</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
