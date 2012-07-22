@@ -1,17 +1,13 @@
-﻿using Clockwork.Agents;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Clockwork.Agents;
 
-namespace Clockwork.Execution.Tasks
-{
-  public class ManufacturerTask : Task
-  {
+namespace Clockwork.Execution.Tasks {
+  public class ManufacturerTask : Task {
     private ClientAgent clientAgent;
     private SupplierAgent supplierAgent;
     private TransportAgent transportAgent;
 
-    public ManufacturerTask(ClientAgent client)
-    {
+    public ManufacturerTask(ClientAgent client) {
       clientAgent = client;
       supplierAgent = null;
       transportAgent = null;
@@ -24,8 +20,7 @@ namespace Clockwork.Execution.Tasks
     public Agent Transport { get { return transportAgent; } set { transportAgent = (TransportAgent)value; } }
     public Agent Client { get { return clientAgent; } }
 
-    public override string ToString()
-    {
+    public override string ToString() {
       return "Manufacturer Task::" + agent.ToString();
     }
   }

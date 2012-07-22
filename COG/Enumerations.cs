@@ -1,7 +1,5 @@
-namespace Clockwork
-{
-  public enum STATISTIC
-  {
+namespace Clockwork {
+  public enum STATISTIC {
     STOCKPRODUCED = 0,
     STOCKSENT = 1,
     STOCKLOST = 2,

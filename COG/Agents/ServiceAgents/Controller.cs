@@ -1,24 +1,18 @@
+using System.Drawing;
 using Clockwork.Execution;
 using Clockwork.Execution.Tasks;
 using Clockwork.GraphStructures;
 using Clockwork.Telegram;
 using Clockwork.Telegram.MessageTypes;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Threading;
 
-namespace Clockwork.Agents.ServiceAgents
-{
-  public class Controller : Agent
-  {
+namespace Clockwork.Agents.ServiceAgents {
+  public class Controller : Agent {
     private Graph coordGraph = new CoordinationGraph();
     private ExecutionTree tree;                         // Execution tree for the current run.
     private int completed;                              // Counter indicatating how many tasks the controller has completed
 
     public Controller(ref Environment environment, ref MessageQueue messages, Image image, Graphics g)
-      : base(ref environment, ref messages, new PointF(g.VisibleClipBounds.Width - 16, 0), 0, image, g)
-    {
+      : base(ref environment, ref messages, new PointF(g.VisibleClipBounds.Width - 16, 0), 0, image, g) {
       Reset();
       // Log agent creation
       manager = this;
@@ -33,8 +27,7 @@ namespace Clockwork.Agents.ServiceAgents
 
     #region Abstract Methods
 
-    public override void Reset()
-    {
+    public override void Reset() {
     }
 
     /// <summary>
@@ -44,10 +37,8 @@ namespace Clockwork.Agents.ServiceAgents
     /// </summary>
     /// <param name="destination">Client agent which made the original request</param>
     /// <param name="task">The results of the Client task request in the enivornment</param>
-    private void HandleInformMessage(Agent destination, ClientTask task)
-    {
-      if (task.RegisteredAgents.Count > 0)
-      {
+    private void HandleInformMessage(Agent destination, ClientTask task) {
+      if (task.RegisteredAgents.Count > 0) {
         // Create an entry in the execution tree. For now the order
         // is placed as a task in the tree with the current client as 
         // the target.
@@ -71,16 +62,14 @@ namespace Clockwork.Agents.ServiceAgents
       }
     }
 
-    private void HandleInformMessage(Agent destination, ManufacturerTask task)
-    {
-      if (task.RegisteredAgents.Count > 0)
-      {
+    private void HandleInformMessage(Agent destination, ManufacturerTask task) {
+      if (task.RegisteredAgents.Count > 0) {
         // Generate a Supplier task 
         SupplierTask sTask = new SupplierTask((SupplierAgent)task.RegisteredAgents[0].TaskAgent, (ManufacturerAgent)task.Agent, task.Demand);
         tree.AddChild(task, sTask);
         InformMessage i = new InformMessage(this, sTask);
         // Send the message first to the client         
-        messageQueue.SendPost(task.Agent, i);        
+        messageQueue.SendPost(task.Agent, i);
         // Send the message also to the manufacturer
         messageQueue.SendPost(task.RegisteredAgents[0].TaskAgent, i);
       }
@@ -91,10 +80,8 @@ namespace Clockwork.Agents.ServiceAgents
     /// </summary>
     /// <param name="destination">Original agent which made the request</param>
     /// <param name="task">Logistics task to be assigned</param>
-    private void HandleInformMessage(TransportTask task)
-    {
-      if (task.RegisteredAgents.Count > 0)
-      {
+    private void HandleInformMessage(TransportTask task) {
+      if (task.RegisteredAgents.Count > 0) {
         // Generate a Supplier task         
         InformMessage i = new InformMessage(this, task);
         task.Agent = task.RegisteredAgents[0].TaskAgent;
@@ -108,11 +95,9 @@ namespace Clockwork.Agents.ServiceAgents
     /// <summary>
     /// Handles the inform message type from the message queue
     /// </summary>
-    protected override void HandleInformMessage()
-    {      
+    protected override void HandleInformMessage() {
       // Handle an inform message
-      if (post.Author is Operator)
-      {
+      if (post.Author is Operator) {
         if (post.Content == null)
           // Operator is Letting me know that it exists
           switchboard = post.Author;
@@ -121,7 +106,7 @@ namespace Clockwork.Agents.ServiceAgents
         else if (post.Content is ManufacturerTask)
           HandleInformMessage(((ManufacturerTask)post.Content).Agent, (ManufacturerTask)post.Content);
         else if (post.Content is TransportTask)
-          HandleInformMessage((TransportTask)post.Content);     
+          HandleInformMessage((TransportTask)post.Content);
       }
     }
 
@@ -130,12 +115,11 @@ namespace Clockwork.Agents.ServiceAgents
     /// If the message is from a client then configure the
     /// execution tree to handle the request
     /// </summary>
-    protected override void HandleRequestMessage()
-    {
+    protected override void HandleRequestMessage() {
       if (post.Author is ClientAgent)                         // Check if a Demand from a client has been made
         HandleRequestMessage((ClientAgent)post.Author);       // Create an entry in the execution tree
       else if (post.Author is ManufacturerAgent && !(post.Content is TransportTask))              // Check if a Request from a manufacturer has been made
-        HandleRequestMessage((ManufacturerAgent)post.Author ); // Update the entry in the execution tree
+        HandleRequestMessage((ManufacturerAgent)post.Author); // Update the entry in the execution tree
       else if (!(post.Author is Operator) && post.Content is TransportTask)
         HandleRequestMessage(post.Author, (TransportTask)post.Content);
     }
@@ -153,8 +137,7 @@ namespace Clockwork.Agents.ServiceAgents
     ///       A manufacturer is nearby which has spare capacity.
     /// </summary>
     /// <param name="client">Client agent which is making the request</param>
-    private void HandleRequestMessage(ClientAgent client)
-    {     
+    private void HandleRequestMessage(ClientAgent client) {
       // Controller will request payoffs from all agents in the environment
       // from the possible payoffs it is possible for the controller to select the
       // best agent for the job.
@@ -163,15 +146,14 @@ namespace Clockwork.Agents.ServiceAgents
       Message agentRequest = new RequestMessage(this, ref cTask);
       messageQueue.SendPost(switchboard, agentRequest);
       // Check if the communication edge is already set
-      communicationNode.AddEdge(client.CommunicationNode);     
+      communicationNode.AddEdge(client.CommunicationNode);
     }
 
     /// <summary>
     /// Manufacturer is requesting supply. Find an agent that can provide it.
     /// </summary>
     /// <param name="manufacturer">The manufacturer agent making the request</param>
-    private void HandleRequestMessage(ManufacturerAgent manufacturer)
-    {
+    private void HandleRequestMessage(ManufacturerAgent manufacturer) {
       Task mTask = manufacturer.Task;
       // Request the payoff results from the agents in the environment
       // which can provide the required service
@@ -183,8 +165,7 @@ namespace Clockwork.Agents.ServiceAgents
     /// Logistics request. Find an agent that can provide it.
     /// </summary>
     /// <param name="manufacturer">The supplier agent making the request</param>
-    private void HandleRequestMessage(Agent author, TransportTask task)
-    {      
+    private void HandleRequestMessage(Agent author, TransportTask task) {
       // Request the payoff results from the agents in the environment
       // which can provide the required service
       Task lTask = task;
@@ -192,21 +173,17 @@ namespace Clockwork.Agents.ServiceAgents
       messageQueue.SendPost(switchboard, agentRequest);
     }
 
-    protected override void Act()
-    {
+    protected override void Act() {
 
     }
 
     /// <summary>
     /// Monitor the execution tree to determine which tasks are completed
     /// </summary>
-    protected override void Sensor()
-    {
-      for (int i = 0; i < tree.Root.Nodes.Count; i++)
-      {
+    protected override void Sensor() {
+      for (int i = 0; i < tree.Root.Nodes.Count; i++) {
         ExecutionNode n = (ExecutionNode)tree.Root.Nodes[i];
-        if (n.Task.Status)
-        {
+        if (n.Task.Status) {
           completed++;
           n.Remove();
         }
@@ -217,13 +194,11 @@ namespace Clockwork.Agents.ServiceAgents
     /// Controller Agent can never decay out of the environment.
     /// </summary>
     /// <returns>Always returns false since the controller cannot decay</returns>
-    public override bool Decay()
-    {
+    public override bool Decay() {
       return false;
     }
 
-    public override string ToString()
-    {
+    public override string ToString() {
       return "Controller Agent";
     }
 

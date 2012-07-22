@@ -1,17 +1,12 @@
 using Clockwork.Agents;
-using Clockwork.Telegram.MessageTypes;
-using System;
-using System.Collections.Generic;
 
-namespace Clockwork.Telegram
-{
+namespace Clockwork.Telegram {
   /// <summary>
   /// COG_Messages are used by agents to send messages to each other. Each
   /// message contains a Header allowing agents to be able to determine information
   /// regarding this message.
   /// </summary>
-  public abstract class Message
-  {
+  public abstract class Message {
     protected object content;              // Message is contained as a object
     protected Agent author;                // Agent that sent this message
 
@@ -19,8 +14,7 @@ namespace Clockwork.Telegram
     /// Creates a message instance for the current agent
     /// </summary>
     /// <param name="aAgent">Agent that creates this message</param>        
-    public Message(Agent Author)
-    {
+    public Message(Agent Author) {
       author = Author;
     }
 
@@ -37,13 +31,11 @@ namespace Clockwork.Telegram
     /// has no destination so it is better suited for the broadcast action.
     /// </summary>
     /// <param name="aMessage">A message object</param>
-    public void Write(object messageContents)
-    {
+    public void Write(object messageContents) {
       content = messageContents;
     }
 
-    public override string ToString()
-    {
+    public override string ToString() {
       return "Unknown Message";
     }
   }

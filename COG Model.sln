@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual C# Express 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C# Express 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "COG Model", "COG Model\COG Model.csproj", "{17FD01C1-780F-4531-A5D9-80ECBBD126E0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clockwork", "COG\Clockwork.csproj", "{BAE0AE46-97E4-4B20-9AF8-78541A0C19D6}"

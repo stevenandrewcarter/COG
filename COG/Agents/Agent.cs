@@ -1,18 +1,14 @@
+using System;
+using System.Drawing;
+using System.Windows.Forms;
 using Clockwork.Execution.Tasks;
 using Clockwork.GraphStructures;
 using Clockwork.Telegram;
 using Clockwork.Telegram.MessageTypes;
-using System;
-using System.ComponentModel;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Forms;
 
-namespace Clockwork.Agents
-{
-  public enum AGENT_TYPE
-  {
-    AGENT_LOGISTICS = 0,    
+namespace Clockwork.Agents {
+  public enum AGENT_TYPE {
+    AGENT_LOGISTICS = 0,
     AGENT_SUPPLIER = 1,
     AGENT_MANUFACTURE = 2,
     AGENT_CLIENT = 3,
@@ -23,8 +19,7 @@ namespace Clockwork.Agents
   /// <summary>
   /// Abstract class of what an COG Agent should contain. 
   /// </summary>
-  public abstract partial class Agent : TreeNode
-  {
+  public abstract partial class Agent : TreeNode {
     protected AGENT_TYPE type;
 
     // Agent state variables
@@ -49,19 +44,17 @@ namespace Clockwork.Agents
     /// <summary>
     /// Default constructor. Sets all local variables to null
     /// </summary>
-    public Agent(ref Environment environment, ref MessageQueue messages, 
-      PointF spawnLocation, int agentID, Image image, Graphics g)
-    {
+    public Agent(ref Environment environment, ref MessageQueue messages,
+      PointF spawnLocation, int agentID, Image image, Graphics g) {
       // Intialise variables
       env = environment;
       // Create a communication node for the agent      
       messageQueue = messages;
       messageQueue.Register(this);
-      messageQueue.MessageEvent += new MessageQueue.MessageHandler(messageQueue_MessageEvent); 
+      messageQueue.MessageEvent += new MessageQueue.MessageHandler(messageQueue_MessageEvent);
       assignedTask = null;
       this.g = g;
-      if (image != null)
-      {
+      if (image != null) {
         this.image = image;
         location = spawnLocation;
       }
@@ -70,13 +63,11 @@ namespace Clockwork.Agents
       // Initialise Agent state variables      
       id = agentID;
       rnd = new Random(System.Environment.TickCount);
-      lifeCounter = rnd.Next(MIN_LIFE_COUNTER, MAX_LIFE_COUNTER);      
+      lifeCounter = rnd.Next(MIN_LIFE_COUNTER, MAX_LIFE_COUNTER);
     }
 
-    void messageQueue_MessageEvent(object sender, MessageEventArgs e)
-    {
-      if (e.Destination.Equals(this))
-      {
+    void messageQueue_MessageEvent(object sender, MessageEventArgs e) {
+      if (e.Destination.Equals(this)) {
         post = e.MailMessage;
         HandlePost();
       }
@@ -86,7 +77,7 @@ namespace Clockwork.Agents
 
     #region Properties
 
-    public AGENT_TYPE Type { get { return type; } }        
+    public AGENT_TYPE Type { get { return type; } }
     public CommunicationGraphNode CommunicationNode { get { return communicationNode; } }
     public CoordinationGraphNode CoordinationNode { get { return coordinationNode; } }
     public PointF Location { get { return location; } }
@@ -114,25 +105,19 @@ namespace Clockwork.Agents
     /// </summary>
     /// <returns>A payoff value which indicates the potential to perform a task in the environment. 
     /// Default is 0 which means the agent has no ability to perform that particular task.</returns>
-    protected virtual double CalculatePayoff(Task task)
-    {
+    protected virtual double CalculatePayoff(Task task) {
       return 0;
     }
 
     /// <summary>
     /// General Message handling call.
     /// </summary>
-    protected void HandlePost()
-    {
+    protected void HandlePost() {
       // Can now read post that has arrived
-      if (post != null)
-      {
-        if (post is InformMessage)
-        {
+      if (post != null) {
+        if (post is InformMessage) {
           HandleInformMessage();
-        }
-        else if (post is RequestMessage)
-        {
+        } else if (post is RequestMessage) {
           HandleRequestMessage();
         }
       }
@@ -144,14 +129,11 @@ namespace Clockwork.Agents
     /// so that the world can remove the agent once its timer expires.
     /// </summary>
     /// <returns>Boolean value indicating if the agent has expired</returns>
-    public virtual bool Decay()
-    {
-      if (lifeCounter > 0)
-      {
+    public virtual bool Decay() {
+      if (lifeCounter > 0) {
         lifeCounter--;
         return false;
-      }
-      else
+      } else
         return true;
     }
 
@@ -159,14 +141,12 @@ namespace Clockwork.Agents
     /// Kills the agent in the environment. Cleans up the agent and clears the 
     /// drawing elements.
     /// </summary>
-    public virtual void Kill()
-    {
+    public virtual void Kill() {
       communicationNode.Delete();
-      coordinationNode.Delete();      
-    }    
+      coordinationNode.Delete();
+    }
 
-    public void Execute()
-    {
+    public void Execute() {
       Sensor();
       Act();
     }
@@ -174,10 +154,8 @@ namespace Clockwork.Agents
     /// <summary>
     /// Use this call to identify the Controller from the Operator
     /// </summary>
-    protected void RequestController()
-    {
-      if (manager == null)
-      {
+    protected void RequestController() {
+      if (manager == null) {
         // Generate a new request message for the controller
         Clockwork.Telegram.Message m = new RequestMessage(this, manager);
         messageQueue.SendPost(switchboard, m);
@@ -195,15 +173,11 @@ namespace Clockwork.Agents
     /// <param name="agent">Agent node to update</param>
     /// <param name="node">Child node to update</param>
     /// <param name="text">Text string to display in the node</param>
-    protected void Update(Agent agent, string node, string text)
-    {
-      if (agent.TreeView.InvokeRequired)
-      {
+    protected void Update(Agent agent, string node, string text) {
+      if (agent.TreeView.InvokeRequired) {
         UpdateCallback d = new UpdateCallback(Update);
         agent.TreeView.Invoke(d, new object[] { agent, node, text });
-      }
-      else
-      {
+      } else {
         agent.Nodes[node].Text = text;
       }
     }

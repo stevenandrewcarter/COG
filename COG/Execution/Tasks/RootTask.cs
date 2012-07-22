@@ -1,26 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Clockwork.Execution.Tasks
-{
+namespace Clockwork.Execution.Tasks {
   // Place holder task to represent the root of the execution tree
-  public class RootTask : Task
-  {
+  public class RootTask : Task {
     public RootTask()
-      : base()
-    {
+      : base() {
       // Can't actually activate the Root Execution Node.
       status = true;
     }
 
-    public override string ToString()
-    {
+    public override string ToString() {
       return "Execution Tree";
     }
-    
-    public override void Reset()
-    {
+
+    public override void Reset() {
       status = true;
       agent = null;
     }
